@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio MVP Mockup 01 - Dashboard</title>
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --panel: #fffdf9;
+        --panel-strong: #f0e6da;
+        --ink: #1f1d1b;
+        --muted: #6d625d;
+        --line: #e7dccf;
+        --accent: #a46a47;
+        --accent-soft: #e7d1be;
+        --green: #638669;
+        --amber: #d5a55d;
+        --red: #b9655d;
+        --uploaded: #6b8fc1;
+        --published: #62876c;
+        --unpublished: #bf8b4e;
+        --views: #7772ad;
+        --likes: #bd6f91;
+        --dislikes: #b9655d;
+        --reviews: #c49a46;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .app {
+        max-width: 1420px;
+        margin: 24px auto;
+        padding: 0 24px 40px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255,255,255,0.35);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 14px 20px;
+        margin-bottom: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: 34px; height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), #d8b092);
+        display: grid;
+        place-items: center;
+        color: white;
+      }
+
+      .nav {
+        display: flex;
+        gap: 22px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .nav a { text-decoration: none; color: inherit; }
+      .pill {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 8px 12px;
+        border-radius: 999px;
+      }
+      .account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: white;
+        background: var(--accent);
+        font-weight: 700;
+      }
+
+      .main-grid {
+        display: grid;
+        grid-template-columns: 260px minmax(0,1fr);
+        gap: 18px;
+      }
+
+      .sidebar {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px 18px;
+      }
+
+      .side-header {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+
+      .side-section {
+        margin-bottom: 24px;
+      }
+      .side-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-radius: 12px;
+        color: var(--ink);
+        margin: 8px 0;
+        background: #faf5f0;
+      }
+      .side-item.active {
+        background: var(--accent-soft);
+        border: 1px solid rgba(164,106,71,0.2);
+      }
+      .record-key {
+        display: grid;
+        gap: 9px;
+      }
+      .record-key div {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .badge {
+        display: inline-block;
+        min-width: 26px;
+        text-align: center;
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: #efeadf;
+        font-size: 12px;
+      }
+
+      .content {
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, #f6efe8, #ebe3d8);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 28px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+      }
+
+      .hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 3vw, 3rem);
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .button {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-weight: 600;
+      }
+      .button.primary {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .metric-card {
+        border-top: 4px solid var(--record-color);
+        background: linear-gradient(150deg, var(--record-tint), var(--panel) 70%);
+      }
+      .metric-card .label { color: var(--record-color); }
+      .uploaded { --record-color: var(--uploaded); --record-tint: #e7eef8; }
+      .published { --record-color: var(--published); --record-tint: #e9f1e9; }
+      .unpublished { --record-color: var(--unpublished); --record-tint: #f7eedf; }
+      .views { --record-color: var(--views); --record-tint: #eeecf8; }
+      .likes { --record-color: var(--likes); --record-tint: #f7eaf0; }
+      .dislikes { --record-color: var(--dislikes); --record-tint: #f8e9e7; }
+      .reviews { --record-color: var(--reviews); --record-tint: #f7f0dc; }
+
+      .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .value {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      .trend {
+        font-size: 12px;
+        color: var(--green);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 18px;
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .panel-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .chart-box {
+        min-height: 260px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #fbf8f5, #f4ecdf);
+        border: 1px solid var(--line);
+        padding: 16px 14px 12px;
+      }
+
+      .chart-legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .legend-swatch {
+        width: 9px;
+        height: 9px;
+        border-radius: 3px;
+        background: var(--swatch);
+      }
+      .chart-layout {
+        display: grid;
+        grid-template-columns: 30px 1fr 28px;
+        gap: 8px;
+      }
+      .y-axis {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 188px;
+        padding-bottom: 4px;
+        color: var(--muted);
+        font-size: 10px;
+        text-align: right;
+      }
+      .y-axis.right {
+        text-align: left;
+      }
+      .plot {
+        height: 188px;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        border-bottom: 1px solid var(--line);
+        background: repeating-linear-gradient(to bottom, transparent 0, transparent 45px, rgba(109,98,93,.13) 46px);
+      }
+      .month-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: center;
+      }
+      .bars {
+        height: 100%;
+        display: flex;
+        align-items: end;
+        gap: 5px;
+      }
+      .bar {
+        width: 14px;
+        border-radius: 6px 6px 0 0;
+        background: linear-gradient(180deg, var(--views), #bcb8df);
+      }
+      .bar.reaction {
+        background: linear-gradient(180deg, var(--likes), #e5b7ca);
+      }
+      .month-labels {
+        display: flex;
+        justify-content: space-around;
+        margin: 7px 36px 0 38px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        background: #fffaf5;
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+
+      .art-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .thumb {
+        width: 46px; height: 46px;
+        border-radius: 12px;
+        object-fit: cover;
+      }
+      .quick-actions {
+        border-top: 1px solid var(--line);
+        margin-top: 16px;
+        padding-top: 14px;
+      }
+      .quick-actions h4 {
+        margin: 0 0 10px;
+        font-size: 13px;
+      }
+      .action-link {
+        display: flex;
+        justify-content: space-between;
+        padding: 9px 10px;
+        border-radius: 10px;
+        background: #faf5f1;
+        margin-top: 7px;
+        font-size: 13px;
+      }
+
+      .mini {
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          Portfolio
+        </div>
+        <nav class="nav">
+          <a href="#">Dashboard</a>
+          <a href="#">Galleries</a>
+          <a href="#">Artwork</a>
+          <a href="#">Engagement</a>
+        </nav>
+        <div class="account"><span class="avatar">A</span><span>Artist · Signed in</span><button class="pill">Sign out</button></div>
+      </header>
+
+      <div class="main-grid">
+        <aside class="sidebar">
+          <div class="side-header">Overview</div>
+          <div class="side-section">
+            <div class="side-item active"><span>Dashboard</span><span class="badge">12</span></div>
+            <div class="side-item"><span>Gallery</span><span class="badge">5</span></div>
+            <div class="side-item"><span>Published</span><span class="badge">8</span></div>
+            <div class="side-item"><span>Unpublished</span><span class="badge">4</span></div>
+          </div>
+
+          <div class="side-header">Mediums</div>
+          <div class="side-section">
+            <div class="side-item"><span>Graphite</span><span class="badge">2</span></div>
+            <div class="side-item"><span>Charcoal</span><span class="badge">3</span></div>
+            <div class="side-item"><span>Pen & Ink</span><span class="badge">4</span></div>
+            <div class="side-item"><span>Watercolour</span><span class="badge">2</span></div>
+            <div class="side-item"><span>Colours</span><span class="badge">1</span></div>
+          </div>
+          <div class="side-header">Record types</div>
+          <div class="record-key">
+            <div style="color:var(--uploaded)"><span class="dot"></span>Uploaded</div>
+            <div style="color:var(--published)"><span class="dot"></span>Published</div>
+            <div style="color:var(--unpublished)"><span class="dot"></span>Unpublished</div>
+            <div style="color:var(--views)"><span class="dot"></span>Views</div>
+            <div style="color:var(--likes)"><span class="dot"></span>Likes</div>
+            <div style="color:var(--dislikes)"><span class="dot"></span>Dislikes</div>
+            <div style="color:var(--reviews)"><span class="dot"></span>Reviews</div>
+          </div>
+        </aside>
+
+        <main class="content">
+          <section class="hero">
+            <div>
+              <h1>Portfolio overview</h1>
+              <p>Monitor your published works, viewer reactions, and engagement trends.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="button primary">+ New artwork</button>
+            </div>
+          </section>
+
+          <section class="metrics">
+            <div class="card stat metric-card uploaded">
+              <span class="label">Uploaded</span>
+              <span class="value">12</span>
+              <span class="trend">Artwork records</span>
+            </div>
+            <div class="card stat metric-card published">
+              <span class="label">Published</span>
+              <span class="value">8</span>
+              <span class="trend">Visible in gallery</span>
+            </div>
+            <div class="card stat metric-card unpublished">
+              <span class="label">Unpublished</span>
+              <span class="value">4</span>
+              <span class="trend">Hidden from visitors</span>
+            </div>
+            <div class="card stat metric-card views">
+              <span class="label">Views</span>
+              <span class="value">9.3k</span>
+              <span class="trend">+18% vs prior period</span>
+            </div>
+            <div class="card stat metric-card likes">
+              <span class="label">Likes</span>
+              <span class="value">426</span>
+              <span class="trend">+11% vs prior period</span>
+            </div>
+            <div class="card stat metric-card dislikes">
+              <span class="label">Dislikes</span>
+              <span class="value">18</span>
+              <span class="trend">Across all artworks</span>
+            </div>
+            <div class="card stat metric-card reviews">
+              <span class="label">Reviews</span>
+              <span class="value">33</span>
+              <span class="trend">Visitor comments</span>
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="card">
+              <div class="panel-header">
+                <h3>Engagement, over time</h3>
+                <span class="mini">Monthly totals · last 6 months</span>
+              </div>
+              <div class="chart-box">
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-swatch" style="--swatch:var(--views)"></span>Views</span>
+                  <span class="legend-item"><span class="legend-swatch" style="--swatch:var(--likes)"></span>Likes</span>
+                </div>
+                <div class="chart-layout">
+                  <div class="y-axis"><span>1.5k</span><span>1k</span><span>500</span><span>0</span></div>
+                  <div class="plot">
+                    <div class="month-group"><div class="bars"><span class="bar" style="height:42%"></span><span class="bar reaction" style="height:28%"></span></div></div>
+                    <div class="month-group"><div class="bars"><span class="bar" style="height:50%"></span><span class="bar reaction" style="height:34%"></span></div></div>
+                    <div class="month-group"><div class="bars"><span class="bar" style="height:46%"></span><span class="bar reaction" style="height:31%"></span></div></div>
+                    <div class="month-group"><div class="bars"><span class="bar" style="height:66%"></span><span class="bar reaction" style="height:42%"></span></div></div>
+                    <div class="month-group"><div class="bars"><span class="bar" style="height:61%"></span><span class="bar reaction" style="height:48%"></span></div></div>
+                    <div class="month-group"><div class="bars"><span class="bar" style="height:82%"></span><span class="bar reaction" style="height:59%"></span></div></div>
+                  </div>
+                  <div class="y-axis right"><span>100</span><span>67</span><span>33</span><span>0</span></div>
+                </div>
+                <div class="month-labels"><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span></div>
+                <p class="mini">Monthly views (left scale) and likes (right scale).</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="panel-header">
+                <h3>Top works</h3>
+                <span class="mini">By views</span>
+              </div>
+              <ul class="list">
+                <li>
+                  <div class="art-card">
+                    <img class="thumb" src="../img/IMG-20211204-WA0031.jpg" alt="Fan with cherry blossom artwork" />
+                    <div>
+                      <strong>Fan in Bloom</strong><br />
+                      <span class="mini">Colours</span>
+                    </div>
+                  </div>
+                  <b>1.2k</b>
+                </li>
+                <li>
+                  <div class="art-card">
+                    <img class="thumb" src="../img/IMG-20211204-WA0017.jpg" alt="Ink drawing of birds and lettering" />
+                    <div>
+                      <strong>Birds &amp; Letters</strong><br />
+                      <span class="mini">Pen and Ink</span>
+                    </div>
+                  </div>
+                  <b>980</b>
+                </li>
+                <li>
+                  <div class="art-card">
+                    <img class="thumb" src="../img/face.jpg" alt="Graphite portrait study" />
+                    <div>
+                      <strong>Portrait Study</strong><br />
+                      <span class="mini">Graphite</span>
+                    </div>
+                  </div>
+                  <b>860</b>
+                </li>
+              </ul>
+              <div class="quick-actions">
+                <h4>Quick actions</h4>
+                <div class="action-link"><span>Edit artwork title</span><strong>→</strong></div>
+                <div class="action-link"><span>Update artwork image</span><strong>→</strong></div>
+                <div class="action-link"><span>Moderate comments</span><strong>→</strong></div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

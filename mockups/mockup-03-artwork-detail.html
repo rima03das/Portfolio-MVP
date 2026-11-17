@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio MVP Mockup 03 - Artwork Detail & Admin</title>
+    <style>
+      :root {
+        --bg: #f6f2ee;
+        --panel: #fffdfb;
+        --panel-2: #f1e7dd;
+        --ink: #1e1b18;
+        --muted: #655d57;
+        --line: #e9d9cb;
+        --accent: #8e6449;
+        --accent-soft: #ead4c0;
+        --green: #537a5d;
+        --gold: #d7ae64;
+        --red: #b15a4d;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .shell {
+        max-width: 1450px;
+        margin: 24px auto;
+        padding: 0 20px 40px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.45);
+        border-radius: 18px;
+        padding: 12px 18px;
+        margin-bottom: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+      }
+
+      .brand-mark {
+        width: 30px; height: 30px;
+        background: linear-gradient(135deg, var(--accent), #d1a687);
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        color: white;
+      }
+
+      .nav {
+        display: flex;
+        gap: 18px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 252px minmax(0,1fr) 360px;
+        gap: 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+      }
+
+      .sidebar .section {
+        margin-bottom: 18px;
+      }
+
+      .sidebar .title {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #faf5f1;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 9px 12px;
+        margin: 8px 0;
+      }
+      .menu-item.active {
+        background: var(--accent-soft);
+        border-color: rgba(142,100,73,0.28);
+      }
+      .small-badge {
+        background: #f0e7df;
+        border-radius: 999px;
+        min-width: 24px;
+        text-align: center;
+        padding: 4px 7px;
+        font-size: 11px;
+      }
+
+      .main {
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero-card {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .art-preview {
+        min-height: 420px;
+        background: url("../img/armour.jpg") center 35% / cover no-repeat;
+        position: relative;
+      }
+
+      .detail {
+        padding: 24px 22px 22px;
+      }
+
+      .eyebrow {
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1 {
+        margin: 10px 0 8px;
+        font-size: clamp(2.2rem, 2.8vw, 3.4rem);
+        letter-spacing: -0.06em;
+      }
+
+      .meta-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+
+      .meta-pill {
+        background: #f9f1ea;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .description {
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 15px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 22px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 12px;
+        padding: 11px 15px;
+        font-weight: 600;
+      }
+      .btn.primary {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+      .btn.ghost {
+        background: var(--panel-2);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0,1fr));
+        gap: 14px;
+      }
+
+      .stat-card {
+        padding: 16px 18px;
+      }
+
+      .stat-card .label {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .stat-card .number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-top: 8px;
+      }
+      .good { color: var(--green); }
+      .warn { color: var(--gold); }
+      .bad { color: var(--red); }
+
+      .right {
+        display: grid;
+        gap: 18px;
+      }
+
+      .comment-box {
+        background: #fffaf5;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px 12px;
+      }
+
+      .comment {
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .comment:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .internal-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .internal-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+
+      .stacked {
+        display: grid;
+        gap: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          Portfolio Admin
+        </div>
+        <nav class="nav">
+          <span>Dashboard</span>
+          <span>Artwork</span>
+          <span>Galleries</span>
+          <span>Engagement</span>
+        </nav>
+        <div><span>Artist · Signed in</span> <button class="btn">Sign out</button></div>
+      </header>
+
+      <div class="layout">
+        <aside class="panel sidebar">
+          <div class="section">
+            <div class="title">Navigation</div>
+            <div class="menu-item active"><span>All artworks</span><span class="small-badge">12</span></div>
+            <div class="menu-item"><span>Published</span><span class="small-badge">8</span></div>
+            <div class="menu-item"><span>Drafts</span><span class="small-badge">3</span></div>
+            <div class="menu-item"><span>Unpublished</span><span class="small-badge">1</span></div>
+          </div>
+
+          <div class="section">
+            <div class="title">Mediums</div>
+            <div class="menu-item"><span>Graphite</span><span class="small-badge">3</span></div>
+            <div class="menu-item"><span>Charcoal</span><span class="small-badge">2</span></div>
+            <div class="menu-item"><span>Pen &amp; Ink</span><span class="small-badge">4</span></div>
+            <div class="menu-item"><span>Watercolour</span><span class="small-badge">2</span></div>
+            <div class="menu-item"><span>Colours</span><span class="small-badge">1</span></div>
+          </div>
+        </aside>
+
+        <main class="main">
+          <section class="panel hero-card">
+            <div class="art-preview"></div>
+            <div class="detail">
+              <div class="eyebrow">Featured artwork</div>
+              <h1>Armoured Study</h1>
+              <div class="meta-row">
+                <div class="meta-pill">Watercolour</div>
+                <div class="meta-pill">Published</div>
+                <div class="meta-pill">Updated 2 weeks ago</div>
+              </div>
+
+              <div class="description">
+                A character study of an armoured figure, using layered washes and expressive texture to bring out the weight of the armour and the quiet presence of its wearer.
+              </div>
+
+              <div class="actions">
+                <button class="btn primary">Publish</button>
+                <button class="btn ghost">Edit artwork</button>
+                <button class="btn">Unpublish</button>
+                <button class="btn">Delete</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="stats-grid">
+            <div class="panel stat-card">
+              <div class="label">Views</div>
+              <div class="number">1,240</div>
+            </div>
+            <div class="panel stat-card">
+              <div class="label">Likes</div>
+              <div class="number good">426</div>
+            </div>
+            <div class="panel stat-card">
+              <div class="label">Dislikes</div>
+              <div class="number bad">18</div>
+            </div>
+            <div class="panel stat-card">
+              <div class="label">Reviews</div>
+              <div class="number warn">33</div>
+            </div>
+          </section>
+        </main>
+
+        <aside class="right">
+          <div class="panel">
+            <div class="title" style="font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:14px;">Recent reviews</div>
+            <div class="comment-box">
+              <div class="comment">
+                <div class="comment-header"><strong>Visitor A</strong><span>2d ago</span></div>
+                <div>The atmosphere is beautiful. The tonal balance is especially strong.</div>
+              </div>
+              <div class="comment">
+                <div class="comment-header"><strong>Visitor B</strong><span>5d ago</span></div>
+                <div>I love how the reflections feel soft and human rather than overly polished.</div>
+              </div>
+              <div class="comment">
+                <div class="comment-header"><strong>Visitor C</strong><span>1w ago</span></div>
+                <div>One of the most compelling compositions in the collection.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel stacked">
+            <div class="title" style="font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:8px;">Quick actions</div>
+            <div class="internal-list">
+              <div class="internal-item"><span>Edit title</span><strong>→</strong></div>
+              <div class="internal-item"><span>Update image</span><strong>→</strong></div>
+              <div class="internal-item"><span>Moderate comments</span><strong>→</strong></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

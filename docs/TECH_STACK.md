@@ -11,7 +11,7 @@
 - Java 21
 - Spring Boot 3
 - Why: Java is already required; Spring Boot gives fast REST API development, validation, security hooks, and easy persistence integration for a local web portal.
-- Suggested modules: Spring Web, Spring Data JPA, Validation, and optionally Spring DevTools for local iteration.
+- Suggested modules: Spring Web, Spring Data JPA, Validation, Spring Security for local admin/viewer authentication, and optionally Spring DevTools for local iteration.
 
 ### Database
 - H2 Database (embedded file-based RDBMS) for the MVP

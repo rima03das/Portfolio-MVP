@@ -2,7 +2,7 @@
 
 ## Problem
 
-As a small artist, I want a portfolio web portal that lets me showcase my artworks and track how visitors engage with them. The portal needs to support two core experiences: managing my collection as an artist/admin, and letting site visitors browse the public gallery and leave reactions such as views, likes, dislikes, and comments. The goal is to understand which artworks are active, published, and getting attention without requiring any external services or accounts.
+As a small artist, I want a portfolio web portal that lets me showcase my artworks and track how visitors engage with them. The portal needs to support two core experiences: managing my collection as an authenticated artist/admin, and letting visitors browse the public gallery and leave reactions such as likes, dislikes, and comments after signing in. Visitors can browse without an account; views may be recorded anonymously. The goal is to understand which artworks are active, published, and getting attention without requiring external services.
 
 ## Proposed outcome
 
@@ -28,7 +28,7 @@ The dashboard creates a summary of the overall engagement across the whole portf
     - Pen and Ink
     - Watercolour and Gouache
     - Colours
-- **Viewers**: anonymous public visitors who browse the portfolio and may leave reactions or contact details (email or phone) as part of a viewer record.
+- **Viewers**: public visitors who browse anonymously and authenticate only when they want to like, dislike, or comment.
 - **Artwork management**: every gallery has a search box, a way to add new artwork, and edit/delete actions for each artwork.
 - **Review flow**: deleting an artwork should require confirmation and clearly note that related records will be removed as part of that action.
 
@@ -50,7 +50,7 @@ The look follows Portfolio's brand guidelines and takes priority over any genera
 ## Affected users and systems
 
 - **Primary user**: one artist/admin managing the portfolio and reviewing engagement data.
-- **Secondary users**: anonymous visitors to the public gallery who browse artwork and may like, dislike, view, or comment on it.
+- **Secondary users**: public visitors who can browse anonymously; they must authenticate to like, dislike, or comment. Artwork views may be tracked anonymously.
 - **Systems involved**: no external systems are required for the MVP. The web portal runs locally in the browser and stores its data locally.
 
 ## Constraints
@@ -59,17 +59,18 @@ The look follows Portfolio's brand guidelines and takes priority over any genera
 - This is a web portal, not a standalone desktop/mobile app. It runs locally in the browser using one documented command on macOS, Linux, and Windows, and does not require internet access to use.
 - All changes are persisted: they remain after a browser refresh and reappear every time the portal starts.
 - One documented command resets the data to the sample data so the portal can be restarted from a clean baseline.
-- This is a prototype MVP, not a multi-user product.
-- Not in scope for the MVP: sign-in, user accounts or multiple users; dark mode; mobile layout; AI features; email, calendar, or phone integrations; currencies other than US dollars; custom reports beyond the dashboard; tags or custom fields; changing pipeline stages; importing or exporting data.
+- This is a prototype MVP with one artist/admin account and authenticated visitor accounts for engagement; it is not a multi-admin product.
+- Authentication must work locally without an external identity provider. The exact sign-in/registration and account recovery flows remain to be decided.
+- Not in scope for the MVP: multiple artist/admin accounts; dark mode; mobile layout; AI features; email, calendar, or phone integrations; currencies other than US dollars; custom reports beyond the dashboard; tags or custom fields; changing pipeline stages; importing or exporting data.
 
 ## Success criteria
 
 The MVP is successful when all of the following are true:
 - A single artist/admin can add, edit, delete, publish, and unpublish artworks in the portfolio.
-- Public visitors can browse the gallery, open artwork details, and leave reactions such as views, likes, dislikes, and reviews/comments.
+- Public visitors can browse the gallery and open artwork details without signing in; they must authenticate to like, dislike, or comment.
 - The dashboard shows accurate counts for uploaded, published, unpublished, liked, disliked, reviewed, and viewed artworks.
 - The web portal works fully offline on a desktop/laptop and keeps data saved between visits and browser refreshes.
 - The reset command restores the portal to the sample dataset and returns it to a clean starting state.
-- The experience is usable as a polished prototype for portfolio presentation and basic engagement tracking, even though advanced features such as user accounts, mobile support, and integrations are intentionally deferred.
+- The experience is usable as a polished prototype for portfolio presentation and basic engagement tracking, even though multiple admin accounts, mobile support, and integrations are intentionally deferred.
 
 
