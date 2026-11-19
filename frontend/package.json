@@ -6,11 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
+    "lint": "eslint src",
+    "lint:ts": "oxlint src --deny-warnings",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc -b --pretty false",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:root": "prettier --config .prettierrc.json --write ../package.json ../README.md ../AGENTS.md ../scripts/*.mjs ../docs/changes/harness/*.md",
+    "format:root:check": "prettier --config .prettierrc.json --check ../package.json ../README.md ../AGENTS.md ../scripts/*.mjs ../docs/changes/harness/*.md"
   },
   "dependencies": {
     "react": "^19.3.1",

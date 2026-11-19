@@ -1,6 +1,6 @@
 package com.portfolio.model;
 
 public enum AccountRole {
-    ADMIN,
-    VIEWER
+  ADMIN,
+  VIEWER
 }

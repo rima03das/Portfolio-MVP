@@ -55,6 +55,23 @@ To run only the browser workflows:
 npm run test:e2e
 ```
 
+## Quality checks
+
+Install the official [Gitleaks CLI](https://github.com/gitleaks/gitleaks/releases)
+and make it available on `PATH`. Then run:
+
+```sh
+npm run check:quick
+npm run check
+npm run format
+```
+
+ESLint applies the recommended React Hooks and accessibility rules and the
+complexity limit; Oxlint supplies TypeScript rules compatible with the project's
+TypeScript 7 compiler. The quick check runs formatting, lint, complexity,
+type/compile, secret scanning, unit-test, and 80% line-coverage gates without
+browser end-to-end tests. The full check includes the end-to-end workflows.
+
 ## Local and offline use
 
 After Node dependencies, Maven dependencies, and the Playwright browser are installed, the application and its artwork images are served locally. The runtime does not call external APIs or load remote fonts/images. Initial dependency installation may require internet access; preinstall dependencies before using the machine offline.

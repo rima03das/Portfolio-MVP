@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin/dashboard")
 public class DashboardController {
 
-    private final DashboardService dashboardService;
+  private final DashboardService dashboardService;
 
-    public DashboardController(DashboardService dashboardService) {
-        this.dashboardService = dashboardService;
-    }
+  public DashboardController(DashboardService dashboardService) {
+    this.dashboardService = dashboardService;
+  }
 
-    @GetMapping
-    public DashboardResponse dashboard() {
-        return dashboardService.getDashboard();
-    }
+  @GetMapping
+  public DashboardResponse dashboard() {
+    return dashboardService.getDashboard();
+  }
 }

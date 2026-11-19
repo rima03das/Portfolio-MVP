@@ -1,6 +1,9 @@
 import type { Artwork, Dashboard } from '../types'
 
-export function makeArtwork(id: number, status: Artwork['status'] = 'PUBLISHED'): Artwork {
+export function makeArtwork(
+  id: number,
+  status: Artwork['status'] = 'PUBLISHED',
+): Artwork {
   return {
     id,
     title: `Study ${id}`,
@@ -15,12 +18,14 @@ export function makeArtwork(id: number, status: Artwork['status'] = 'PUBLISHED')
     dislikes: 0,
     comments: 1,
     myReaction: null,
-    commentSnippets: [{
-      id,
-      username: 'Guest',
-      content: 'A lovely use of light.',
-      createdAt: '2026-01-02T00:00:00Z',
-    }],
+    commentSnippets: [
+      {
+        id,
+        username: 'Guest',
+        content: 'A lovely use of light.',
+        createdAt: '2026-01-02T00:00:00Z',
+      },
+    ],
   }
 }
 
@@ -33,16 +38,18 @@ export function makeDashboard(): Dashboard {
     likes: 8,
     dislikes: 1,
     comments: 4,
-    byMedium: [{
-      medium: 'Graphite',
-      uploaded: 1,
-      published: 1,
-      unpublished: 0,
-      views: 10,
-      likes: 2,
-      dislikes: 0,
-      comments: 1,
-    }],
+    byMedium: [
+      {
+        medium: 'Graphite',
+        uploaded: 1,
+        published: 1,
+        unpublished: 0,
+        views: 10,
+        likes: 2,
+        dislikes: 0,
+        comments: 1,
+      },
+    ],
     monthly: [{ month: 'Jun', views: 10, likes: 2 }],
     topWorks: [makeArtwork(1)],
   }

@@ -51,11 +51,13 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - Automated suites and Windows runtime verification are complete. macOS/Linux behavior, disconnected-network operation, and quantitative performance are not yet independently validated.
 
 ## Verification
-- Frontend: 11 unit/component tests pass; production build/type-check passes.
-- Backend: 14 unit and API integration tests pass.
-- Playwright: 2 browser E2E tests pass, covering the admin/viewer workflow, filtering/sorting, delete confirmation, session samples, refresh behavior, local image loading, and absence of external requests.
+- `npm run check:quick` passes all format, lint, type, secret-scanning, unit-test, and coverage checks.
+- `npm run check` passes the same checks plus end-to-end tests.
+- Frontend: 32 unit/component tests pass; line coverage is 92.75% (474/511), above the 80% threshold.
+- Backend: 14 unit and API integration tests pass; Checkstyle and JaCoCo gates pass.
+- Playwright: 2 browser E2E tests pass, covering the admin/viewer workflow, filtering/sorting, delete confirmation, session samples, refresh behavior, local image loading, and absence of external requests. E2E uses port 8081 to avoid conflicts with a running local app on port 8080.
+- Gitleaks history and working-tree scans pass with no findings.
 - Windows runtime checks pass: `npm start` serves the SPA/API and local images, a published artwork survives a real application restart with the file-backed H2 database, and `npm run reset` restores the sample baseline.
-- Full `npm test` passes all frontend, backend, and E2E suites.
 - Linux/macOS startup and reset, true disconnected-network operation, and quantified performance remain unverified.
 
 ## Definition of done

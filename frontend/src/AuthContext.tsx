@@ -27,6 +27,10 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+function fetchSessionState() {
+  return Promise.all([getCurrentAccount(), getSetupStatus()])
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [account, setAccount] = useState<Account | null>(null)
   const [setupRequired, setSetupRequired] = useState(false)
@@ -37,14 +41,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true)
     setError(null)
     try {
-      const [current, setup] = await Promise.all([
-        getCurrentAccount(),
-        getSetupStatus(),
-      ])
+      const [current, setup] = await fetchSessionState()
       setAccount(current)
       setSetupRequired(setup.setupRequired)
     } catch (requestError) {
-      const message = requestError instanceof Error ? requestError.message : null
+      const message =
+        requestError instanceof Error ? requestError.message : null
       setError(message || 'The portfolio service is unavailable.')
     } finally {
       setLoading(false)
@@ -52,8 +54,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    void refresh()
-  }, [refresh])
+    let active = true
+    fetchSessionState()
+      .then(([current, setup]) => {
+        if (!active) return
+        setAccount(current)
+        setSetupRequired(setup.setupRequired)
+      })
+      .catch((requestError: unknown) => {
+        if (!active) return
+        const message =
+          requestError instanceof Error ? requestError.message : null
+        setError(message || 'The portfolio service is unavailable.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   const signIn = useCallback(async (username: string, password: string) => {
     const signedInAccount = await apiSignIn(username, password)

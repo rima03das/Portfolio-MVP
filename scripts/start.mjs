@@ -38,7 +38,9 @@ const server = spawn(`${quote(wrapper)} -f backend/pom.xml spring-boot:run`, {
   env: {
     ...process.env,
     JAVA_HOME: javaHome,
-    PORTFOLIO_DB_URL: process.env.PORTFOLIO_DB_URL ?? `jdbc:h2:file:${databaseFile};DB_CLOSE_ON_EXIT=FALSE`,
+    PORTFOLIO_DB_URL:
+      process.env.PORTFOLIO_DB_URL ??
+      `jdbc:h2:file:${databaseFile};DB_CLOSE_ON_EXIT=FALSE`,
   },
 })
 

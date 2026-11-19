@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MediumConverter implements Converter<String, Medium> {
 
-    @Override
-    public Medium convert(String source) {
-        return Medium.fromLabel(source);
-    }
+  @Override
+  public Medium convert(String source) {
+    return Medium.fromLabel(source);
+  }
 }

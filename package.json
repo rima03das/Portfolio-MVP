@@ -6,6 +6,23 @@
     "start": "node scripts/start.mjs",
     "reset": "node scripts/reset.mjs",
     "test": "node scripts/run-tests.mjs",
-    "test:e2e": "npm --prefix frontend run test:e2e"
+    "test:quick": "node scripts/run-tests.mjs --quick",
+    "test:e2e": "npm --prefix frontend run test:e2e",
+    "check": "node scripts/check.mjs",
+    "check:quick": "node scripts/check.mjs --quick",
+    "format": "node scripts/format.mjs"
+  },
+  "devDependencies": {
+    "@babel/core": "7.29.13",
+    "@babel/eslint-parser": "7.29.13",
+    "@babel/plugin-syntax-jsx": "7.29.7",
+    "@babel/plugin-syntax-typescript": "7.29.7",
+    "@eslint/js": "^9.39.5",
+    "@vitest/coverage-v8": "5.1.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1"
   }
 }

@@ -8,24 +8,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class SampleDataRunner implements CommandLineRunner {
 
-    private final SampleDataService sampleDataService;
-    private final ArtworkRepository artworkRepository;
-    private final boolean reset;
+  private final SampleDataService sampleDataService;
+  private final ArtworkRepository artworkRepository;
+  private final boolean reset;
 
-    public SampleDataRunner(
-            SampleDataService sampleDataService,
-            ArtworkRepository artworkRepository,
-            @Value("${app.data.reset:false}") boolean reset
-    ) {
-        this.sampleDataService = sampleDataService;
-        this.artworkRepository = artworkRepository;
-        this.reset = reset;
-    }
+  public SampleDataRunner(
+      SampleDataService sampleDataService,
+      ArtworkRepository artworkRepository,
+      @Value("${app.data.reset:false}") boolean reset) {
+    this.sampleDataService = sampleDataService;
+    this.artworkRepository = artworkRepository;
+    this.reset = reset;
+  }
 
-    @Override
-    public void run(String... args) {
-        if (reset || artworkRepository.count() == 0) {
-            sampleDataService.reset();
-        }
+  @Override
+  public void run(String... args) {
+    if (reset || artworkRepository.count() == 0) {
+      sampleDataService.reset();
     }
+  }
 }

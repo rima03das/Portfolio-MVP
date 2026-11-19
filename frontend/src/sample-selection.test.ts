@@ -17,12 +17,14 @@ function artwork(id: number): Artwork {
     dislikes: 0,
     comments: 1,
     myReaction: null,
-    commentSnippets: [{
-      id,
-      username: 'Visitor',
-      content: 'Beautiful work.',
-      createdAt: '',
-    }],
+    commentSnippets: [
+      {
+        id,
+        username: 'Visitor',
+        content: 'Beautiful work.',
+        createdAt: '',
+      },
+    ],
   }
 }
 
@@ -41,7 +43,9 @@ describe('session sample selection', () => {
 
     expect(first).toHaveLength(3)
     expect(new Set(first.map((item) => item.id)).size).toBe(3)
-    expect(first.map((item) => item.id)).toEqual(subsequent.map((item) => item.id))
+    expect(first.map((item) => item.id)).toEqual(
+      subsequent.map((item) => item.id),
+    )
     expect(first.every((item) => item.commentSnippets.length > 0)).toBe(true)
   })
 

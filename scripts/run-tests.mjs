@@ -5,6 +5,7 @@ import { resolveJavaHome } from './java-home.mjs'
 
 const rootDir = fileURLToPath(new URL('../', import.meta.url))
 const isWindows = process.platform === 'win32'
+const quick = process.argv.includes('--quick')
 process.env.JAVA_HOME = resolveJavaHome()
 const wrapper = path.join(rootDir, 'backend', isWindows ? 'mvnw.cmd' : 'mvnw')
 
@@ -23,7 +24,10 @@ function run(command) {
   })
 }
 
-const quote = (value) => isWindows ? `"${value}"` : `'${value.replace(/'/g, "'\\''")}'`
+const quote = (value) =>
+  isWindows ? `"${value}"` : `'${value.replace(/'/g, "'\\''")}'`
 await run(`${isWindows ? 'npm.cmd' : 'npm'} --prefix frontend test`)
-await run(`${quote(wrapper)} -f backend/pom.xml test`)
-await run(`${isWindows ? 'npm.cmd' : 'npm'} --prefix frontend run test:e2e`)
+await run(`${quote(wrapper)} -f backend/pom.xml verify`)
+if (!quick) {
+  await run(`${isWindows ? 'npm.cmd' : 'npm'} --prefix frontend run test:e2e`)
+}

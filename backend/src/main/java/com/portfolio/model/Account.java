@@ -10,61 +10,59 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
 import java.time.Instant;
 
 @Entity
 @Table(name = "accounts", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class Account {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, length = 40)
-    private String username;
+  @Column(nullable = false, length = 40)
+  private String username;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
-    private String passwordHash;
+  @Column(name = "password_hash", nullable = false, length = 255)
+  private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 12)
-    private AccountRole role;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 12)
+  private AccountRole role;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
 
-    protected Account() {
-    }
+  protected Account() {}
 
-    public Account(String username, String passwordHash, AccountRole role) {
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.role = role;
-    }
+  public Account(String username, String passwordHash, AccountRole role) {
+    this.username = username;
+    this.passwordHash = passwordHash;
+    this.role = role;
+  }
 
-    @PrePersist
-    void setCreatedAt() {
-        createdAt = Instant.now();
-    }
+  @PrePersist
+  void setCreatedAt() {
+    createdAt = Instant.now();
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+  public String getPasswordHash() {
+    return passwordHash;
+  }
 
-    public AccountRole getRole() {
-        return role;
-    }
+  public AccountRole getRole() {
+    return role;
+  }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
 }

@@ -8,7 +8,8 @@ const isWindows = process.platform === 'win32'
 const databaseFile = path.join(rootDir, 'data', 'portfolio').replace(/\\/g, '/')
 const javaHome = resolveJavaHome()
 const wrapper = path.join(rootDir, 'backend', isWindows ? 'mvnw.cmd' : 'mvnw')
-const quote = (value) => isWindows ? `"${value}"` : `'${value.replace(/'/g, "'\\''")}'`
+const quote = (value) =>
+  isWindows ? `"${value}"` : `'${value.replace(/'/g, "'\\''")}'`
 const child = spawn(`${quote(wrapper)} -f backend/pom.xml spring-boot:run`, {
   cwd: rootDir,
   stdio: 'inherit',
@@ -16,7 +17,9 @@ const child = spawn(`${quote(wrapper)} -f backend/pom.xml spring-boot:run`, {
   env: {
     ...process.env,
     JAVA_HOME: javaHome,
-    PORTFOLIO_DB_URL: process.env.PORTFOLIO_DB_URL ?? `jdbc:h2:file:${databaseFile};DB_CLOSE_ON_EXIT=FALSE`,
+    PORTFOLIO_DB_URL:
+      process.env.PORTFOLIO_DB_URL ??
+      `jdbc:h2:file:${databaseFile};DB_CLOSE_ON_EXIT=FALSE`,
     PORTFOLIO_RESET: 'true',
     SPRING_MAIN_WEB_APPLICATION_TYPE: 'none',
   },

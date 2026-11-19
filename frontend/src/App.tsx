@@ -10,9 +10,18 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import { AuthProvider, useAuth } from './AuthContext'
-import { AdminComments, AdminDashboard, ArtworkForm, ArtworkManagement } from './pages/AdminPages'
+import {
+  AdminComments,
+  AdminDashboard,
+  ArtworkForm,
+  ArtworkManagement,
+} from './pages/AdminPages'
 import { SetupPage, SignInPage, SignUpPage } from './pages/AuthPages'
-import { ArtworkDetailPage, GalleryPage, LandingPage } from './pages/PublicPages'
+import {
+  ArtworkDetailPage,
+  GalleryPage,
+  LandingPage,
+} from './pages/PublicPages'
 import './App.css'
 
 function Shell() {
@@ -29,14 +38,22 @@ function Shell() {
       await signOut()
       navigate('/', { replace: true })
     } catch (requestError) {
-      setActionError(requestError instanceof Error ? requestError.message : 'Sign out failed.')
+      setActionError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'Sign out failed.',
+      )
     } finally {
       setSigningOut(false)
     }
   }
 
   if (loading) {
-    return <main className="loading-screen" aria-live="polite">Opening your portfolio…</main>
+    return (
+      <main className="loading-screen" aria-live="polite">
+        Opening your portfolio…
+      </main>
+    )
   }
 
   return (
@@ -55,12 +72,18 @@ function Shell() {
           {account ? (
             <>
               <span className="signed-in-label">{account.username}</span>
-              <button className="button button-outline button-compact" onClick={handleSignOut} disabled={signingOut}>
+              <button
+                className="button button-outline button-compact"
+                onClick={handleSignOut}
+                disabled={signingOut}
+              >
                 {signingOut ? 'Signing out…' : 'Sign out'}
               </button>
             </>
           ) : setupRequired ? (
-            <Link className="button button-outline button-compact" to="/setup">Set up artist account</Link>
+            <Link className="button button-outline button-compact" to="/setup">
+              Set up artist account
+            </Link>
           ) : (
             <Link
               className="button button-outline button-compact"
@@ -74,15 +97,26 @@ function Shell() {
       {error && (
         <div className="service-banner" role="alert">
           <span>{error}</span>
-          <button className="text-button" onClick={() => void refresh()}>Retry</button>
+          <button className="text-button" onClick={() => void refresh()}>
+            Retry
+          </button>
         </div>
       )}
-      {actionError && <div className="service-banner" role="alert">{actionError}</div>}
+      {actionError && (
+        <div className="service-banner" role="alert">
+          {actionError}
+        </div>
+      )}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/artworks/:id" element={<ArtworkDetailPage />} />
-        <Route path="/setup" element={setupRequired ? <SetupPage /> : <Navigate to="/signin" replace />} />
+        <Route
+          path="/setup"
+          element={
+            setupRequired ? <SetupPage /> : <Navigate to="/signin" replace />
+          }
+        />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route element={<RequireAdmin />}>
@@ -107,7 +141,12 @@ function RequireAdmin() {
   const location = useLocation()
   if (loading) return <main className="loading-screen">Checking access…</main>
   if (!account) {
-    return <Navigate to={`/signin?returnTo=${encodeURIComponent(location.pathname)}`} replace />
+    return (
+      <Navigate
+        to={`/signin?returnTo=${encodeURIComponent(location.pathname)}`}
+        replace
+      />
+    )
   }
   if (account.role !== 'ADMIN') return <Navigate to="/" replace />
   return <Outlet />
@@ -118,7 +157,9 @@ function NotFound() {
     <main className="narrow-page empty-state">
       <p className="eyebrow">Not found</p>
       <h1>This page is not in the collection.</h1>
-      <Link className="button button-primary" to="/">Return home</Link>
+      <Link className="button button-primary" to="/">
+        Return home
+      </Link>
     </main>
   )
 }

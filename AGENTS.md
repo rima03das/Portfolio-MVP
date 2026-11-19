@@ -6,5 +6,6 @@
 - `docs/TECH_STACK.md` records the technology stack; `docs/status.md` tracks implementation and verification.
 - Follow `docs/STANDARDS.md` when making changes.
 - Review `docs/REVIEW.md` for review criteria, including code behavior not described by the product specification.
+- Run `npm run check` before completing changes; use `npm run check:quick` for all checks except end-to-end tests, and `npm run format` to apply formatting.
 
 Update `docs/status.md` when work changes implementation progress or verification results.

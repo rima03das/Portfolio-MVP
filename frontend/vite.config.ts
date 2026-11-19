@@ -6,7 +6,9 @@ export default defineConfig({
   plugins: [react()],
   publicDir: fileURLToPath(new URL('../img', import.meta.url)),
   build: {
-    outDir: fileURLToPath(new URL('../backend/src/main/resources/static', import.meta.url)),
+    outDir: fileURLToPath(
+      new URL('../backend/src/main/resources/static', import.meta.url),
+    ),
     emptyOutDir: true,
   },
   server: {
@@ -19,5 +21,12 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
     clearMocks: true,
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      thresholds: {
+        lines: 80,
+      },
+    },
   },
 })

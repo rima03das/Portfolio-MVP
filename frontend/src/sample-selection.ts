@@ -21,7 +21,9 @@ export function selectSessionSamples(
         new Set(ids).size === sampleSize &&
         ids.every((id): id is number => typeof id === 'number' && byId.has(id))
       ) {
-        const selected = ids.map((id) => byId.get(id)).filter((item): item is Artwork => item !== undefined)
+        const selected = ids
+          .map((id) => byId.get(id))
+          .filter((item): item is Artwork => item !== undefined)
         if (selected.length === sampleSize) return selected
       }
     } catch (error) {
@@ -33,9 +35,15 @@ export function selectSessionSamples(
   const shuffled = [...available]
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1))
-    ;[shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]]
+    ;[shuffled[index], shuffled[swapIndex]] = [
+      shuffled[swapIndex],
+      shuffled[index],
+    ]
   }
   const selected = shuffled.slice(0, sampleSize)
-  storage.setItem(storageKey, JSON.stringify(selected.map((artwork) => artwork.id)))
+  storage.setItem(
+    storageKey,
+    JSON.stringify(selected.map((artwork) => artwork.id)),
+  )
   return selected
 }

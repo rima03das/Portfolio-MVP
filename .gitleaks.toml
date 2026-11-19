@@ -1,0 +1,15 @@
+title = "Portfolio secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Local environment and generated application data"
+paths = [
+  '''(^|/)\.env$''',
+  '''^data/''',
+  '''^backend/target/''',
+  '''^backend/src/main/resources/static/''',
+  '''^frontend/coverage/''',
+  '''^frontend/test-results/''',
+]
