@@ -8,15 +8,18 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   workers: 1,
-  reporter: 'list',
+  reporter: process.env.CI
+    ? [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]]
+    : 'list',
   timeout: 60_000,
   expect: {
     timeout: 15_000,
   },
   use: {
+    ...devices['Desktop Chrome'],
     baseURL: `http://127.0.0.1:${e2ePort}`,
     trace: 'retain-on-failure',
-    ...devices['Desktop Chrome'],
+    channel: process.env.CI ? 'chrome' : undefined,
   },
   webServer: {
     command: 'npm start',

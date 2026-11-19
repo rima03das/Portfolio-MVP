@@ -74,6 +74,12 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - Copilot `preToolUse` was exercised with `.env` edit, patch, and shell-command payloads; `.env.example`, unrelated files, and read-only access were allowed.
 - Copilot hook handlers were tested directly with representative event payloads. Runtime hook dispatch was not reloaded in this existing session; start a new trusted Copilot-harness session to verify discovery and live event delivery.
 
+## Continuous integration
+
+- `.github/workflows/ci.yml` runs on every branch push. It installs and checksum-verifies Gitleaks, scans repository history and files before setting up Java, Node, or uv, then runs `npm run check`.
+- CI pins `astral-sh/setup-uv` to `v10.3.3` and installs the latest uv. Playwright uses the runner's installed Google Chrome and generates an HTML report uploaded when the job fails.
+- No workflow secrets were added. Local `npm run check` passes; the GitHub-hosted workflow itself awaits its first push-triggered run.
+
 ## Definition of done
 
 The MVP is done when:

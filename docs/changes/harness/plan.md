@@ -9,6 +9,8 @@
 - `.github/hooks/quality-gates.json` and supporting scripts for Copilot
   turn-end validation and `.env` edit protection.
 - `AGENTS.md` to document the enforced hook behavior.
+- `.github/workflows/ci.yml`, the Playwright configuration, and formatting
+  scripts to run full checks on pushes and retain failed browser reports.
 - `docs/status.md` to record implementation and verification.
 
 ## Order of work
@@ -16,7 +18,10 @@
 1. Install Lefthook and define the pre-commit workflow.
 2. Add the Copilot `agentStop` and `preToolUse` hooks.
 3. Format changed documents and update status.
-4. Exercise each hook's pass, fail, and bypass behavior, then run quick checks.
+4. Add push CI with an early full-repository Gitleaks scan, pinned
+   `setup-uv@v10.3.3`, Java/Node setup, Chrome-based Playwright, and
+   failure-only report upload.
+5. Exercise hooks and validate formatting, config, and project checks.
 
 ## Risk identified
 
@@ -27,6 +32,10 @@
   providers use different hook formats.
 - Shell-command inspection for `.env` is intentionally conservative because
   shell syntax can obscure indirect filesystem writes.
+- CI must preserve full Git history for Gitleaks and must make the CLI available
+  to the existing `npm run check` scan.
+- Playwright's HTML reporter should only be enabled in CI; local runs should
+  preserve their existing behavior.
 
 ## Work in phases and proof
 
@@ -52,3 +61,13 @@
   pre-commit path.
 - Proof: inspect Lefthook's configured commands and report each direct hook
   simulation and the repository check result.
+
+### Phase 4: Add push CI
+
+- On every branch push, install and checksum-verify Gitleaks and scan Git
+  history and working-tree files before setting up Java, Node, and uv.
+- Install npm dependencies and run the full `npm run check` using the runner's
+  Google Chrome. Upload the HTML Playwright report on job failure.
+- Proof: validate workflow YAML and Playwright config, then run the full local
+  check suite. GitHub-hosted runner execution remains the final integration
+  check.
