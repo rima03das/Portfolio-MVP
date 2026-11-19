@@ -1,0 +1,11 @@
+{
+  "name": "portfolio-mvp",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node scripts/start.mjs",
+    "reset": "node scripts/reset.mjs",
+    "test": "node scripts/run-tests.mjs",
+    "test:e2e": "npm --prefix frontend run test:e2e"
+  }
+}

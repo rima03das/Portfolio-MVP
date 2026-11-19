@@ -1,6 +1,6 @@
 # Portfolio MVP Implementation Plan
 
-This plan is based on [docs/intent.md](docs/intent.md) and [docs/spec.md](docs/spec.md). It describes proposed implementation work only; no application code has been written.
+This plan is based on [intent.md](intent.md) and [spec.md](spec.md). Implementation is in progress.
 
 ## Files that change
 
@@ -17,6 +17,7 @@ The workspace currently contains planning documents, mockups, and artwork images
   - `src/main/resources/` for database configuration, schema/migrations, and deterministic sample data
   - `src/test/java/` for service, repository, API, and security tests
 - Root-level scripts/configuration for one-command startup and sample-data reset on Windows, macOS, and Linux.
+- Maven wrapper files to pin the backend build tool across supported platforms.
 - `README.md` for prerequisites, one-command startup, local account setup, reset instructions, and test commands.
 - `docs/status.md` to track implementation progress and verification results.
 
@@ -24,7 +25,7 @@ Existing product intent, specification, stack guidance, mockups, and image asset
 
 ## Order of work
 
-1. Resolve local authentication decisions that affect data and workflows: viewer registration, provisioning exactly one admin, account recovery expectations, and session behavior. Define the reaction rule (replace, cancel, or prevent duplicate like/dislike) and view-count deduplication policy.
+1. **Resolved with the product owner:** viewers self-register with unique usernames/passwords; a one-time first-run page provisions the sole admin; no account recovery is in the MVP; auth uses an HTTP-only browser-session cookie; same-reaction clicks remove a reaction and opposite clicks replace it; anonymous views count once per artwork per browser session; three of the five curated samples are randomized once per browser session.
 2. Set up the React/Vite frontend and Java 21/Spring Boot backend, H2 file database, environment configuration, and frontend, backend, and end-to-end test runners.
 3. Define and persist the relational model for artworks, the five galleries/media, accounts, reactions, comments, and views. Add a curated five-artwork sample pool with representative comments and a deterministic reset workflow.
 4. Implement backend validation, artwork management and search/filtering, status transitions, public queries, engagement operations, dashboard aggregates and drill-down data, and local authentication/authorization.
@@ -48,7 +49,7 @@ Existing product intent, specification, stack guidance, mockups, and image asset
 | Anonymous views; authenticated likes, dislikes, and comments; signed-out users return to their artwork after sign-in | Record anonymous view events; associate reactions/comments with an authenticated viewer; preserve the intended detail destination through sign-in | Tests verify event identity and authorization; E2E test completes sign-in and the deferred interaction on the original artwork |
 | Delete confirmation clearly warns that related engagement and comments are removed | Show an explicit confirmation message; delete dependent records transactionally or by database cascade | UI/E2E test checks confirmation text and cancellation/confirmation; backend test verifies no related records remain |
 | Curated initial sample: three of five randomly selected pieces with representative comment snippets | Seed five curated sample artworks and comments; select and display three distinct samples on the landing view, each linking to its detail page | Seed/reset test verifies the exact five-piece baseline; UI/E2E test verifies three distinct samples, snippets, and working detail links |
-| Deterministic reset restores sample data; one startup command; persistence across refreshes and restarts | Provide documented startup and reset commands; make reset explicit and repeatable; store core data in the H2 file database | Repeated reset tests restore the same baseline; E2E test verifies persistence after refresh/restart and reset recovery |
+| Deterministic reset restores sample data; one startup command; persistence across refreshes and restarts | Provide documented startup and reset commands; make reset explicit and repeatable; store core data in the H2 file database | Repeated reset tests restore the same baseline; E2E verifies refresh persistence; a local runtime check verifies file-database persistence across app restart |
 | Offline use on Windows, macOS, and Linux; no external services | Package local assets and avoid runtime CDN/API dependencies; provide platform-appropriate command wrappers for the same documented workflow | Verify core workflows with network disconnected and run startup/reset checks on each supported OS |
 | Polished, light-mode, desktop/laptop-first UI following Portfolio brand guidance | Apply the accepted dashboard and public-gallery mockups and brand guidance; keep mobile-first and dark-mode work out of scope | Desktop visual/usability checklist covers light mode, laptop layout, key mockup elements, and error/empty/loading states |
 | Typical portfolio feels immediate; moderate portfolio size; dashboard updates quickly | Check representative list/detail and aggregate requests with a moderate seeded dataset; record timings and identify any blocking delay | Performance validation records measured page/API timings; the numeric acceptance threshold remains to be agreed because the spec does not define one |
@@ -56,10 +57,10 @@ Existing product intent, specification, stack guidance, mockups, and image asset
 
 ## Risk identified
 
-- **Authentication decisions remain open:** registration and recovery are undecided. Settle them before implementing account flows; store only password hashes and protect admin operations separately from viewer interactions.
-- **Engagement semantics are underspecified:** duplicate view counting and repeated like/dislike behavior can make dashboard totals misleading. Define and test the policies before building the metrics.
+- **Authentication decisions resolved:** implement self-service viewer registration, one-time first-run admin setup, no recovery flow, and session-only HTTP-only authentication cookies. Store only password hashes and protect admin operations separately from viewer interactions.
+- **Engagement semantics resolved:** one reaction per viewer/artwork toggles off on the same reaction and changes on the opposite reaction; count one view per artwork/browser session. Cover repeat and boundary behavior with service and API tests.
 - **Record terminology differs:** intent mentions Uploaded, Published, Activity, and Unpublished, while the spec models Activity as engagement and artwork status as Uploaded, Published, or Unpublished. Keep status and engagement as separate concepts; confirm if the dashboard should show a separate “Activity” record category.
-- **Random sample selection versus deterministic reset:** keep the five-artwork seed baseline deterministic while selecting three distinct pieces for the landing view; settle whether selection changes on each visit or remains stable for a session.
+- **Random sample selection versus deterministic reset:** keep the five-artwork seed baseline deterministic and select three distinct pieces once per browser session; test both the exact reset baseline and selection distinctness.
 - **Deletion and reset can lose data:** artwork deletion must remove or otherwise resolve related comments and events, and reset must be explicit, deterministic, and documented as destructive.
 - **Local images and offline operation:** image references must resolve from a local installation without remote assets or external services. Validate startup and browsing with network access unavailable.
 - **Single-command launch across operating systems:** frontend build, backend startup, and reset scripting may differ across Windows, macOS, and Linux. Verify each supported platform rather than assuming portability.
@@ -82,14 +83,9 @@ Implement schema, sample data, reset, artwork CRUD and publication rules, public
 
 **Unit-test proof:**
 
-- Artwork validation rejects missing/invalid required fields and accepts valid records.
-- The five supported mediums are represented; gallery queries, search, sorting, and status filters return the expected records.
-- Status operations publish and unpublish correctly; public queries exclude non-published artworks.
-- Engagement policy prevents or handles repeated reactions according to the agreed rule.
-- View tracking follows the agreed deduplication policy, including repeated requests at its boundary.
-- Dashboard aggregation returns correct portfolio and per-medium counts for uploaded, published, unpublished, views, likes, dislikes, and comments, including empty data.
-- Artwork deletion removes associated engagement and comments; reset restores the exact sample baseline on repeated runs.
-- Authorization rules allow anonymous public reads/views, require the single admin role for management, and require a signed-in viewer for reactions/comments without relying on an external identity provider.
+- `PortfolioWorkflowTest`: verifies the five-piece reset baseline, search and status filtering across all five mediums, publication transitions, reaction toggling/replacement, per-session view deduplication, dashboard metrics/empty state, deletion integrity, and account uniqueness.
+- `PortfolioApiIntegrationTest`: verifies anonymous access boundaries, one-time admin setup, viewer registration/login, session authorization, anonymous view cookies, admin CRUD, and invalid input handling.
+- `PortfolioApplicationTests`: verifies application context startup with an isolated relational database.
 
 **Integration-test proof:** repository/API tests against H2 verify persistence across application contexts, relational integrity, all medium values, public visibility, role-based access, delete behavior, and repeatable reset behavior.
 
@@ -99,13 +95,12 @@ Build admin dashboard and management screens, public gallery and artwork detail,
 
 **Unit-test proof:**
 
-- API client sends the expected requests and reports failures instead of showing success-shaped fallbacks.
-- Gallery/dashboard components render the expected records and counts for loading, empty, and populated responses; gallery search/filter/sort and per-medium summaries behave correctly.
-- Public landing view shows exactly three distinct pieces from the five seeded samples with representative comment snippets and links to their detail pages.
-- Artwork detail renders title, medium, description, image, engagement totals, and comments.
-- Admin actions reflect successful changes and surface failed saves/deletes.
-- Signed-out interaction attempts lead to sign-in while preserving the selected artwork destination.
-- Delete confirmation clearly explains that associated comments and engagement records will be removed; cancel leaves the artwork intact.
+- `api.test.ts`: verifies request parameters, credentials, and visible HTTP/network errors.
+- `PublicPages.test.tsx`: verifies gallery rendering, medium filtering, search, and the signed-out reaction prompt's artwork return destination.
+- `sample-selection.test.ts`: verifies three distinct samples remain selected in the browser session.
+- `AuthPages.test.tsx`: verifies sign-in returns a viewer to the requested artwork.
+- `AdminPages.test.tsx`: verifies dashboard metrics/drill-downs and that canceling deletion preserves the artwork after showing the related-data warning.
+- Artwork create/edit/status transitions, public detail, and engagement are additionally covered in `portfolio.spec.ts`.
 
 ### Phase 4 — End-to-end verification and handoff
 
@@ -113,13 +108,10 @@ Verify complete user workflows, offline operation, persistence across refresh/re
 
 **End-to-end-test proof:**
 
-- Admin signs in, creates an artwork, edits it, publishes it, unpublishes it, and deletes it with confirmation.
-- Admin searches, sorts, and filters within each medium and follows a dashboard summary to its artwork or engagement detail.
-- Anonymous visitor browses published works, opens a detail page, and records a view; unpublished works remain unavailable publicly.
-- Visitor is prompted to sign in before reacting or commenting, then can complete the action and see updated engagement.
-- Dashboard portfolio and medium totals match persisted sample and newly created activity after refresh; public detail shows the corresponding image, description, counts, and comments.
-- Landing view presents three distinct sampled artworks and comment snippets from the curated five-artwork pool.
-- Data survives browser refresh and application restart; the reset command restores the known sample dataset.
+- `portfolio.spec.ts` — one-time admin setup, create/edit/publish/unpublish/delete with confirmation, admin search/filter/sort, viewer registration from the sign-in prompt, return to the original artwork, reaction/comment, and dashboard totals.
+- `portfolio.spec.ts` — verify three distinct sample artworks with comment snippets, unpublished-work exclusion, and no external network requests.
+- `persistence.spec.ts` — verify a browser-session view is counted once across a page refresh.
+- Backend sample-data tests — verify repeatable reset to the five-artwork baseline; `npm run reset` runs the explicit local reset command.
 - Portal launches and supports core workflows without internet access on Windows, macOS, and Linux.
 - Desktop review confirms the light-mode layout follows the accepted mockups and available brand guidance; performance measurements are recorded against an agreed moderate sample size and threshold.
 

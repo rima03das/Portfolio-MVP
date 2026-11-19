@@ -1,6 +1,6 @@
 # Portfolio MVP Status
 
-## Status: Planning — dashboard and public gallery mockups accepted
+## Status: Core MVP implemented — automated checks and Windows smoke tests pass; cross-platform/performance checks pending
 
 ## Goal
 Build a local portfolio web portal for a small artist to showcase artworks, manage gallery content, and review engagement metrics from public visitors.
@@ -29,17 +29,33 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - [mockups/mockup-02-gallery.html](../mockups/mockup-02-gallery.html) — accepted
 - [mockups/mockup-03-artwork-detail.html](../mockups/mockup-03-artwork-detail.html) — pending review
 
-## Open questions
-- Final data model for artworks, viewer records, and engagement events
-- Local authentication, visitor registration, and account recovery flow
-- Exact workflow for likes/dislikes and reviews
-- Reset-to-sample-data command and sample content list
+## Implemented
+- React + TypeScript + Vite frontend and Java 21 + Spring Boot + H2 backend
+- Public landing page, artwork gallery and detail view; local artwork images
+- One-time artist/admin setup and viewer registration/sign-in with role-based access
+- Artwork create/edit/search/filter/sort/publish/unpublish/delete workflows
+- Likes/dislikes, comments, one view per artwork per browser session, and dashboard metrics
+- Five sample artworks with comments and three distinct session-selected landing samples
+- Focused frontend/backend tests and Playwright browser workflows
+- Cross-platform Node startup/reset/test scripts and Maven wrapper
+- Java-home discovery for the wrapper, using `JAVA_HOME` or a Java executable on `PATH`
 
-## Next steps
-1. Review the artwork detail mockup.
-2. Finalize authentication and the data model.
-3. Prepare the project structure and startup workflow.
-4. Build the first working version with sample data.
+## Decisions and known limitations
+- Viewer registration is open; password recovery is out of MVP scope.
+- Authentication uses an HTTP-only browser-session cookie. Repeating a reaction removes it; choosing the opposite replaces it.
+- The reset command is destructive: it also deletes all accounts and engagement records.
+- Landing sample selection currently uses `sessionStorage` and is scoped to a browser tab.
+- Mockup 3 remains pending acceptance; its details are not treated as finalized requirements.
+- The spec has no numeric performance target; performance observations and agreement on a threshold remain outstanding.
+- Automated suites and Windows runtime verification are complete. macOS/Linux behavior, disconnected-network operation, and quantitative performance are not yet independently validated.
+
+## Verification
+- Frontend: 11 unit/component tests pass; production build/type-check passes.
+- Backend: 14 unit and API integration tests pass.
+- Playwright: 2 browser E2E tests pass, covering the admin/viewer workflow, filtering/sorting, delete confirmation, session samples, refresh behavior, local image loading, and absence of external requests.
+- Windows runtime checks pass: `npm start` serves the SPA/API and local images, a published artwork survives a real application restart with the file-backed H2 database, and `npm run reset` restores the sample baseline.
+- Full `npm test` passes all frontend, backend, and E2E suites.
+- Linux/macOS startup and reset, true disconnected-network operation, and quantified performance remain unverified.
 
 ## Definition of done
 The MVP is done when:
@@ -49,3 +65,4 @@ The MVP is done when:
 - the portal runs locally with one documented startup command
 - sample data can be reset with one documented command
 - the project meets the approved scope and constraints in [intent.md](intent.md)
+- frontend, backend, and end-to-end test suites pass; supported platform and offline checks are recorded

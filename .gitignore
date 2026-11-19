@@ -1,0 +1,7 @@
+/node_modules/
+/data/
+/backend/target/
+/backend/src/main/resources/static/
+/frontend/node_modules/
+/frontend/test-results/
+/frontend/playwright-report/
