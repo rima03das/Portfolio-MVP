@@ -1,10 +1,10 @@
 # Portfolio MVP Implementation Plan
 
-This plan is based on [intent.md](intent.md) and [spec.md](spec.md). Implementation is in progress.
+This plan records the MVP implementation work described in [intent.md](intent.md), against the product baseline in [spec.md](../../spec.md). Implementation is complete; see the [status tracker](../../status.md).
 
 ## Files that change
 
-The workspace currently contains planning documents, mockups, and artwork images, but no application source or test projects. The following files and folders are expected to be created:
+The original workspace contained planning documents, mockups, and artwork images. The MVP implementation added the following projects and supporting files:
 
 - `frontend/`
   - `package.json`, `vite.config.ts`, `tsconfig.json`, and `index.html`
@@ -21,7 +21,7 @@ The workspace currently contains planning documents, mockups, and artwork images
 - `README.md` for prerequisites, one-command startup, local account setup, reset instructions, and test commands.
 - `docs/status.md` to track implementation progress and verification results.
 
-Existing product intent, specification, stack guidance, mockups, and image assets are reference material and should not be changed unless implementation uncovers a requirement that needs clarification.
+The current product requirements are documented in [spec.md](../../spec.md). This plan is retained as the implementation record for the MVP change.
 
 ## Order of work
 
@@ -59,7 +59,7 @@ Existing product intent, specification, stack guidance, mockups, and image asset
 
 - **Authentication decisions resolved:** implement self-service viewer registration, one-time first-run admin setup, no recovery flow, and session-only HTTP-only authentication cookies. Store only password hashes and protect admin operations separately from viewer interactions.
 - **Engagement semantics resolved:** one reaction per viewer/artwork toggles off on the same reaction and changes on the opposite reaction; count one view per artwork/browser session. Cover repeat and boundary behavior with service and API tests.
-- **Record terminology differs:** intent mentions Uploaded, Published, Activity, and Unpublished, while the spec models Activity as engagement and artwork status as Uploaded, Published, or Unpublished. Keep status and engagement as separate concepts; confirm if the dashboard should show a separate “Activity” record category.
+- **Record terminology resolved:** Uploaded, Published, and Unpublished are artwork statuses; views, likes, dislikes, and comments are separate engagement records and dashboard metrics.
 - **Random sample selection versus deterministic reset:** keep the five-artwork seed baseline deterministic and select three distinct pieces once per browser session; test both the exact reset baseline and selection distinctness.
 - **Deletion and reset can lose data:** artwork deletion must remove or otherwise resolve related comments and events, and reset must be explicit, deterministic, and documented as destructive.
 - **Local images and offline operation:** image references must resolve from a local installation without remote assets or external services. Validate startup and browsing with network access unavailable.

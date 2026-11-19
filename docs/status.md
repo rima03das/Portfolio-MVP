@@ -22,7 +22,8 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - Database: H2 (embedded RDBMS) for MVP
 
 ## Current artifact set
-- [intent.md](intent.md)
+- [MVP intent](changes/mvp/intent.md)
+- [MVP implementation plan](changes/mvp/plan.md)
 - [TECH_STACK.md](TECH_STACK.md)
 - [spec.md](spec.md)
 - [mockups/mockup-01-dashboard.html](../mockups/mockup-01-dashboard.html) — accepted
@@ -64,5 +65,5 @@ The MVP is done when:
 - the dashboard reflects key counts accurately
 - the portal runs locally with one documented startup command
 - sample data can be reset with one documented command
-- the project meets the approved scope and constraints in [intent.md](intent.md)
+- the project meets the product requirements documented in [spec.md](spec.md)
 - frontend, backend, and end-to-end test suites pass; supported platform and offline checks are recorded

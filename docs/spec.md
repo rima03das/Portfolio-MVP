@@ -1,392 +1,187 @@
-# MVP Specification: Portfolio Web Portal
+# Portfolio product specification
 
-This document defines the requirements and design for the Portfolio MVP based on the product intent and chosen technology stack.
+This is the authoritative description of the Portfolio product and its current behavior. Change-specific intent and plan documents are historical working records; they do not override this specification.
 
-## 1. Product summary
+## 1. Problem and product purpose
 
-The Portfolio MVP is a local-first web portal for a small artist to manage a portfolio of artworks and track visitor engagement. It supports two primary experiences:
+A small artist needs a straightforward way to present a portfolio online, manage which artworks are visible, and understand how visitors engage with individual pieces. The artist also needs to keep the portfolio data local and avoid relying on hosted services. Visitors should be able to explore the public collection without creating an account, and may sign in when they want to react or leave a comment.
 
-- Artist/admin workflow: add, edit, publish, unpublish, and delete artworks; review gallery performance and engagement totals.
-- Public gallery workflow: visitors browse artwork and open detail pages without signing in. They authenticate when they want to like, dislike, or comment; page views may be recorded anonymously.
+Portfolio is a locally hosted web portal that combines a public art gallery with an authenticated artist workspace. It stores artwork and engagement data in a local relational database, serves the interface and artwork assets locally, and provides a documented startup and sample-reset workflow.
 
-The portal is browser-based, runs locally without internet access, and stores data in a local relational database so changes persist across refreshes and restarts.
+## 2. Users and access
 
-## 2. Goals and non-goals
+### Artist
 
-### Goals
+There is one artist/admin account. The first-run setup creates it; the setup endpoint is unavailable once an admin exists. The artist can manage the full collection, view dashboard metrics, and moderate visitor comments.
 
-- Let one artist manage artwork records for multiple mediums.
-- Show a polished public gallery that works well on laptop and desktop screens.
-- Track engagement at the artwork and portfolio level.
-- Keep the system fully local/offline and easy to reset to sample data.
-- Deliver a working prototype for portfolio presentation and basic engagement reporting.
+### Viewer
 
-### Non-goals for MVP
+Viewers can register with a unique username and password. They can browse public artwork anonymously; an account is required to like, dislike, or comment. Admin and viewer roles are distinct, and admin routes are not available to viewer accounts.
 
-- Multiple artist/admin accounts
-- External identity providers or sign-in services
-- Mobile-first design
-- Dark mode
-- AI features
-- Email, calendar, or CRM integrations
-- Advanced reporting or custom export
-- Tags/custom fields or pipeline stages
-- Global marketplace or commerce features
-- External service dependencies
+### Anonymous visitor
 
-## 3. Target users
+An anonymous visitor can browse published work and have artwork detail views counted. Anonymous visitors cannot create reactions or comments.
 
-### Primary user: artist/admin
+## 3. Product experience
 
-The artist is the main operator of the system. They need to:
+### 3.1 Public landing page
 
-- add and manage artwork
-- review engagement metrics
-- publish or unpublish artwork
-- manage portfolio visibility
-- maintain a clean, polished presentation
+- Presents the public collection and links to gallery browsing.
+- Selects three distinct artworks at random from the five seeded sample artworks.
+- Stores the selected IDs in browser `sessionStorage`, so they remain selected on refresh in that tab. Selection is tab-scoped, not shared between tabs.
+- Shows a representative recent comment snippet on sample cards when one is available.
+- Provides navigation by medium and a prompt to sign in or register before interacting.
 
-### Secondary user: public viewer
+### 3.2 Public gallery
 
-The viewer can browse the public site without authentication. They can:
+- Shows published artworks only.
+- Supports filtering by medium, searching title and description, and sorting by recently added, title, or view count.
+- Artwork cards show a local thumbnail, title, medium, description, view count, and a recent comment snippet when available.
+- Visitors can browse without an account.
 
-- browse the gallery by medium
-- view artwork detail pages
-- trigger anonymous view events
-- see public portfolio content only
+### 3.3 Artwork detail
 
-To like, dislike, or comment, a viewer must authenticate. Local authentication must not depend on an external identity provider.
+- Shows the artwork title, medium, description, local image, view/like/dislike/comment totals, and recent comments.
+- Displays up to the 20 most recent comments on an artwork; the total comment count is not capped.
+- Records an anonymous view when the detail page opens.
+- Signed-out visitors who try to react or comment are directed to sign-in. After authentication, they return to the artwork they were viewing.
+- Signed-in visitors can like, dislike, and comment on published artworks.
 
-## 4. Functional requirements
+### 3.4 Artist dashboard
 
-### 4.1 Admin dashboard
+The admin dashboard shows portfolio totals for Uploaded, Published, Unpublished, views, likes, dislikes, and comments. It also provides:
 
-The dashboard is the landing page for the artist/admin and must show:
+- A summary of counts and engagement by each medium.
+- A six-calendar-month views-and-likes trend, including the current month.
+- Up to five top works, ordered by view count.
+- Quick actions for artwork management, adding a work, and comment moderation.
+- Links from metric and medium summaries to relevant admin lists.
 
-- total uploaded artworks
-- total published artworks
-- total unpublished artworks
-- total comments/reviews
-- total likes
-- total dislikes
-- total views
-- a quick summary by medium or gallery
+Counts are derived from persisted artwork, reaction, comment, and view records.
 
-The admin should be able to:
+### 3.5 Artwork management
 
-- open artwork details
-- sort/filter artworks by status and gallery
-- search artworks by title or relevant metadata
-- add a new artwork
-- edit existing artwork
-- publish or unpublish artwork
-- delete artwork with confirmation
+The artist can list all artworks, search title or description, filter by medium and status, sort by recent, title, or view count, and create, edit, publish, unpublish, or delete an artwork.
 
-### 4.2 Gallery management
+An artwork has a title, one of the supported mediums, a description, a local image reference, a status, and creation/update timestamps. The current form selects from the five artwork images bundled with the project; image-file upload and arbitrary image-path entry are not supported.
 
-The system supports galleries for these art mediums:
+Artwork statuses are:
 
-- Graphite
-- Charcoal
-- Pen and Ink
-- Watercolour and Gouache
-- Colours
+- **Uploaded** — stored but not published.
+- **Published** — visible in the public gallery.
+- **Unpublished** — retained in the artist workspace but hidden from public browsing.
 
-Each artwork belongs to a gallery/medium and carries a status:
+Deleting artwork requires confirmation and explains that related comments and engagement records are also removed. Artwork deletion removes its comments, reactions, and view events.
 
-- Uploaded
-- Published
-- Unpublished
+### 3.6 Comment moderation
 
-Gallery behavior:
+The artist can view up to the 200 most recent comments across the portfolio and remove a comment. A removed comment no longer appears in public detail views or counts.
 
-- public gallery views show only published artworks
-- admin views show all artworks including unpublished or uploaded ones
-- artwork search and listing must work within a selected gallery
+## 4. Mediums and bundled artwork
 
-### 4.3 Artwork management
+The product supports exactly these five mediums:
 
-An artwork record must include:
+1. Graphite
+2. Charcoal
+3. Pen and Ink
+4. Watercolour and Gouache
+5. Colours
 
-- unique ID
-- title
-- gallery/medium
-- description or summary
-- image reference/path
-- status
-- create/update timestamps
-- related engagement counts
+Five local image assets are bundled and used by the seeded examples and artwork form: `face.jpg`, `IMG-20211204-WA0017.jpg`, `IMG-20211204-WA0027.jpg`, `IMG-20211204-WA0031.jpg`, and `armour.jpg`.
 
-Supported admin actions:
+## 5. Engagement rules
 
-- add artwork
-- edit artwork details
-- delete artwork
-- publish artwork
-- unpublish artwork
+### Views
 
-Delete behavior:
+- A view is recorded when a visitor opens a published artwork's detail page.
+- Views do not require authentication.
+- A separate HTTP-only browser-session cookie identifies a visitor session. At most one view per artwork is recorded for that session; viewing a different artwork in the same session records a separate view.
+- The view cookie is separate from the authenticated login session.
 
-- deletion must require confirmation
-- deletion should clearly state that related engagement data and comments will be removed
+### Reactions
 
-### 4.4 Public gallery and artwork detail
+- A signed-in account has at most one reaction per artwork.
+- Choosing the same reaction again removes it.
+- Choosing the opposite reaction replaces the existing reaction.
+- Likes and dislikes are counted separately.
 
-The public site must include:
+### Comments
 
-- a browseable gallery view
-- per-medium gallery sections
-- artwork cards with thumbnail and summary
-- detail page for each artwork
+- A signed-in account can add a non-empty comment of up to 1,000 characters to a published artwork.
+- Comments are associated with their author and artwork and include a creation timestamp.
+- Recent comments are visible publicly on artwork detail pages. The artist can remove comments through comment moderation.
 
-The artwork detail page should show:
+## 6. Accounts and security behavior
 
-- title
-- medium
-- description
-- image
-- engagement totals
-- comments/reviews
+- First-run setup creates the only admin account; viewer registration remains available afterward.
+- Usernames are 3–40 characters and accept letters, digits, underscores, periods, and hyphens. They are trimmed, normalized to lowercase, and unique without regard to case.
+- Passwords are 12–128 characters. Passwords are stored as PBKDF2 hashes, never as plaintext.
+- There is no password recovery flow in the current product.
+- Authentication uses a server-side browser session with an HTTP-only, SameSite=Lax cookie and a 30-minute idle timeout.
+- State-changing API requests are protected by CSRF tokens.
+- Admin APIs require the ADMIN role. Viewer interactions require an authenticated account; public reads and view recording are available without signing in.
+- The web application is intended for local use and does not use an external identity provider.
 
-Public visitors can browse and view artwork without signing in. To interact, they must sign in:
+## 7. Data model
 
-- like or dislike an artwork
-- add a review/comment
+The relational model contains:
 
-If an unauthenticated visitor tries to interact, prompt them to sign in and return them to the artwork after authentication.
+- **Artwork** — ID, title, medium, description, local image path, status, creation timestamp, and update timestamp.
+- **Account** — ID, unique username, password hash, role (ADMIN or VIEWER), and creation timestamp.
+- **Comment** — ID, artwork, author account, content, and creation timestamp.
+- **Reaction** — ID, artwork, account, type (LIKE or DISLIKE), and creation timestamp. The artwork/account pair is unique.
+- **View event** — ID, artwork, browser-session key, and creation timestamp. The artwork/session pair is unique.
 
-### 4.5 Viewer engagement tracking
+Artwork engagement totals are derived from their related records. Relationships are enforced in the relational database and related records are removed when artwork is deleted.
 
-The system tracks these engagement types:
+## 8. Architecture and local operation
 
-- view
-- like
-- dislike
-- review/comment
+- **Frontend:** React, TypeScript, and Vite. In normal use, the production build is served by Spring Boot from the same local origin.
+- **Backend:** Java 21 and Spring Boot 3.5.16, exposing REST APIs and serving the single-page application.
+- **Database:** file-backed H2 relational database at `data/portfolio` by default.
+- **Default port:** the combined application is available at `http://localhost:8080`. Vite's development server uses its default port, 5173.
+- **Images:** bundled project files are served locally; the UI has no remote image or font dependency.
+- **Startup:** `npm start` builds the frontend and starts Spring Boot. Java 21 and Node.js are required; the Maven wrapper supplies the pinned Maven distribution.
+- **Reset:** `npm run reset` destructively restores the sample dataset, removing all accounts and engagement activity before reseeding.
+- **Tests:** `npm test` runs frontend tests, backend tests, and Playwright browser workflows.
 
-The following rules apply:
+The application does not need external APIs or hosted services at runtime. Installing Node dependencies, Maven dependencies, and the Playwright browser may require network access unless they are already cached.
 
-- a view is counted when an artwork detail page is opened or a public view event is recorded
-- view events may be recorded without an account
-- likes and dislikes must be associated with an authenticated viewer and a specific artwork
-- comments must be linked to an authenticated viewer and specific artwork, and remain visible in the public detail view
-- engagement totals should be available to the admin dashboard and detail pages
+## 9. Sample data and reset behavior
 
-### 4.6 Reset / sample data workflow
+On an empty database, the application seeds five published sample artworks—one for each medium—with two representative comments per artwork. The reset command restores that baseline and resets database identity sequences. It also deletes every account, reaction, and view event; because the admin account is removed, first-run artist setup must be completed again after a reset.
 
-The system must support a documented reset command that restores the portal to a clean sample dataset. The sample dataset should contain a curated set of representative artworks and comments.
+The sample reset is a development/demo workflow, not an account-preserving maintenance operation. Do not run it where the database contains data that must be retained.
 
-Requirements:
+## 10. User-facing routes and API boundaries
 
-- the app should start in a known state with sample data
-- one command resets local database content to baseline sample data
-- reset behavior should be deterministic and documented
+The browser application provides routes for the landing page, gallery, sign-in, sign-up, first-run setup, artwork detail, admin dashboard, admin artwork list/create/edit, and admin comment moderation.
 
-## 5. Non-functional requirements
+The REST API provides:
 
-### 5.1 Local/offline operation
+- Setup status and initial admin creation.
+- Viewer registration, sign-in, sign-out, current-account lookup, and CSRF token retrieval.
+- Public artwork listing/detail and anonymous view recording.
+- Authenticated artwork reactions and comments.
+- Admin artwork listing/detail/create/update/status changes/deletion.
+- Admin dashboard metrics and comment listing/removal.
 
-- The portal runs locally in the browser
-- No internet connection is required for standard use
-- The app must work on Windows, macOS, and Linux
-- One startup command launches the system locally
+Public artwork endpoints expose only published work. Admin endpoints are role-protected independently of frontend route handling.
 
-### 5.2 Persistence
+## 11. Product constraints and exclusions
 
-- All artwork and engagement changes persist between page refreshes and application restarts
-- Data persists in a local relational database file, not transient memory
+- This is a local web portal, not a standalone desktop or mobile app.
+- The product supports one admin; viewer accounts are permitted.
+- The interface is light-mode and desktop/laptop-oriented. A mobile-first layout and dark mode are not current goals.
+- Artwork images come from the bundled local asset list; upload management is not included.
+- There is no email, calendar, CRM, social login, AI, marketplace, commerce, custom reporting/export, tagging, or pipeline workflow.
+- Account recovery is not available.
+- No numeric performance acceptance threshold is defined.
 
-### 5.3 Performance
+## 12. Current verification and known limitations
 
-- Page loads for a typical portfolio should feel immediate on a laptop/desktop
-- The app should support a moderate portfolio size without significant delay
-- Dashboard counts must update quickly after new activity
-
-### 5.4 Usability
-
-- Interface should be polished enough for a portfolio presentation prototype
-- Light mode only
-- Desktop-first layout preferred
-- Forms should be clear and low-friction for the artist/admin
-
-### 5.5 Security and trust
-
-- Admin functions require artist/admin authentication
-- Public viewing and view tracking do not require authentication
-- Likes, dislikes, and comments require viewer authentication
-- Authentication must operate locally without an external identity provider
-- The system should not expose anything beyond the intended portfolio view
-- Data integrity should be enforced at the database layer where possible
-- The authentication mechanism, account creation, and account recovery flow remain implementation decisions
-
-## 6. Proposed design
-
-### 6.1 Architecture
-
-Recommended MVP architecture:
-
-- Frontend: React + TypeScript + Vite
-- Backend: Java 21 + Spring Boot 3
-- Database: H2 embedded file-based RDBMS
-
-High-level flow:
-
-- React SPA provides the admin dashboard, gallery, detail view, and forms
-- Spring Boot REST API exposes endpoints for artworks, gallery data, and engagement events
-- Spring Security protects admin operations and authenticated visitor interactions
-- H2 stores artwork records, viewer accounts, viewer activity, comments, and status values
-- A single local startup command runs the app and serves the built frontend locally
-
-### 6.2 System components
-
-#### Frontend
-
-Responsibilities:
-
-- render the dashboard and public gallery
-- manage user interactions and forms
-- call REST APIs to load and update records
-- show summary metrics and user feedback
-
-#### Backend
-
-Responsibilities:
-
-- validate artwork and engagement input
-- expose CRUD and query endpoints
-- enforce status rules
-- coordinate database writes
-- support backup/reset operations and sample-data seeding
-
-#### Database
-
-Expected core tables:
-
-- artworks
-  - id
-  - title
-  - gallery
-  - status
-  - description
-  - image_path
-  - created_at
-  - updated_at
-
-- comments
-  - id
-  - artwork_id
-  - account_id
-  - content
-  - created_at
-
-- engagement_events
-  - id
-  - artwork_id
-  - account_id (nullable for anonymous views)
-  - event_type (view, like, dislike, review)
-  - created_at
-
-- accounts
-  - id
-  - login identifier
-  - password hash (never plaintext)
-  - role (ADMIN or VIEWER)
-  - created_at
-
-- gallery_categories
-  - id
-  - name
-
-The DB should enforce relational integrity so artworks and comments are not orphaned, and delete actions should cascade appropriately when required.
-
-### 6.3 Core workflows
-
-#### Workflow A: Add artwork
-
-1. Admin opens artwork form.
-2. Admin enters title, description, medium, image path, and status.
-3. Client submits to backend.
-4. Backend validates data.
-5. Database persists record.
-6. Dashboard and gallery reload updated data.
-
-#### Workflow B: Publish/unpublish artwork
-
-1. Admin selects artwork.
-2. Admin changes status to published or unpublished.
-3. Backend updates the record.
-4. Public gallery shows or hides the item accordingly.
-
-#### Workflow C: View artwork
-
-1. Visitor opens a public artwork detail page.
-2. Frontend loads artwork details and counts.
-3. Backend records a view event without requiring sign-in.
-4. Dashboard totals refresh on the next data load.
-
-#### Workflow D: Like/dislike/comment
-
-1. Visitor chooses a reaction or comment on an artwork detail page.
-2. If signed out, the visitor signs in and returns to that artwork.
-3. Frontend sends the authenticated interaction to the backend.
-4. Backend saves the engagement record with the viewer identity.
-5. Client refreshes artwork metrics and comment list.
-
-#### Workflow E: Reset sample data
-
-1. Admin or developer runs documented reset command.
-2. Script clears local database state.
-3. Script repopulates sample artworks and comments.
-4. App restarts in known, clean baseline state.
-
-## 7. User stories
-
-- As an artist, I want to add a new artwork so I can publish my portfolio pieces.
-- As an artist, I want to edit an artwork so I can fix inaccuracies or update descriptions.
-- As an artist, I want to publish or unpublish work so I can control public visibility.
-- As an artist, I want dashboard totals so I can see which works are performing well.
-- As a visitor, I want to browse by medium so I can explore the gallery easily.
-- As a visitor, I want to open artwork detail pages so I can read more about a work.
-- As a visitor, I want to browse without signing in and authenticate only when I want to react or comment.
-
-## 8. Success criteria
-
-The MVP is successful when:
-
-- the artist can manage artworks from the admin flow
-- public visitors can browse anonymously and authenticate to react or comment
-- the artist/admin can authenticate to access management features
-- dashboard metrics are accurate and update after activity
-- the portal works offline in a local browser environment
-- changes remain saved across refreshes and restarts
-- reset command restores the known sample state
-- the prototype is polished enough for presentation and demo use
-
-## 9. Problems and risks to anticipate
-
-The following issues are likely to arise during implementation and should be addressed early:
-
-- Duplicate view counting: the same visitor may trigger multiple view events for the same artwork in a short period, causing inflated totals.
-- Like/dislike consistency: authenticated viewers may click multiple times; rules must define whether a second click cancels or replaces the prior reaction.
-- Comment moderation: authenticated visitors can post irrelevant content; the MVP may require basic validation and sanitization.
-- Authentication scope: local accounts, sign-in, and account recovery must be designed without external providers; credential storage and session handling need careful implementation.
-- Data integrity on delete: deleting an artwork must also remove related comments and engagement events, or the DB will retain stale references.
-- Reset reliability: a local database reset must be deterministic and safe, especially if the app is being used during development.
-- Offline persistence complexity: browser storage and local app state can drift from the backend database if UI caching and server-side state get out of sync.
-- H2 sizing and compatibility: H2 is a good MVP choice, but long-term usage or production-style migration may require schema changes and data-porting work later.
-- UI state mismatch: dashboard counters and public page counts may temporarily disagree if API calls are not synchronized or refreshed correctly.
-- Startup complexity: a single command must launch the backend and frontend cleanly across Windows, macOS, and Linux without extra manual steps.
-- Limited scope creep: features like visitor accounts, analytics filters, or a richer review system may tempt the team beyond the MVP and delay delivery.
-- Sample dataset realism: the demo portfolio must feel credible and not artificially simplistic, or the prototype loses persuasive value.
-
-## 10. Recommended implementation priority
-
-1. Set up the Java + Spring Boot backend, local authentication, and H2 database.
-2. Build the artwork CRUD API and data model.
-3. Create the React admin dashboard and artwork form.
-4. Implement the public gallery, artwork detail, and visitor sign-in flow.
-5. Add authenticated engagement tracking and comment storage.
-6. Add reset logic and sample seed data.
-7. Validate dashboard metrics and fix edge cases.
-
-This staged approach keeps the MVP focused while ensuring the critical user workflows work before polishing the front-end experience.
+- Frontend unit/component tests, backend tests, and Playwright end-to-end workflows pass on the development Windows environment.
+- Windows startup, reset, local image serving, and file-database persistence across an application restart have been checked.
+- Linux/macOS operation and fully disconnected runtime use have not been independently verified.
+- Landing sample selection is scoped to a tab because it uses `sessionStorage`.
+- The artwork-detail mockup remains pending review; the accepted dashboard and public-gallery mockups are visual references, not a substitute for the behavior specified here.
