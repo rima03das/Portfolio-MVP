@@ -10,7 +10,8 @@
     "test:e2e": "npm --prefix frontend run test:e2e",
     "check": "node scripts/check.mjs",
     "check:quick": "node scripts/check.mjs --quick",
-    "format": "node scripts/format.mjs"
+    "format": "node scripts/format.mjs",
+    "prepare": "lefthook install"
   },
   "devDependencies": {
     "@babel/core": "7.29.13",
@@ -23,6 +24,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.14.0",
+    "lefthook": "^2.2.2",
     "prettier": "^3.10.1"
   }
 }

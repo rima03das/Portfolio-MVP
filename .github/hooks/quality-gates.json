@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "hooks": {
+    "agentStop": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/check-on-stop.cjs",
+        "timeoutSec": 600
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/protect-env.cjs",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

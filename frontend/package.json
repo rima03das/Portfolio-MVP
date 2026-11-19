@@ -15,8 +15,8 @@
     "typecheck": "tsc -b --pretty false",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "format:root": "prettier --config .prettierrc.json --write ../package.json ../README.md ../AGENTS.md ../scripts/*.mjs ../docs/changes/harness/*.md",
-    "format:root:check": "prettier --config .prettierrc.json --check ../package.json ../README.md ../AGENTS.md ../scripts/*.mjs ../docs/changes/harness/*.md"
+    "format:root": "prettier --config .prettierrc.json --write ../package.json ../README.md ../AGENTS.md ../lefthook.yml ../.github/hooks/*.json ../.github/hooks/*.cjs ../scripts/*.mjs ../docs/changes/harness/*.md",
+    "format:root:check": "prettier --config .prettierrc.json --check ../package.json ../README.md ../AGENTS.md ../lefthook.yml ../.github/hooks/*.json ../.github/hooks/*.cjs ../scripts/*.mjs ../docs/changes/harness/*.md"
   },
   "dependencies": {
     "react": "^19.3.1",

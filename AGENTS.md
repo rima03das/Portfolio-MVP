@@ -7,5 +7,6 @@
 - Follow `docs/STANDARDS.md` when making changes.
 - Review `docs/REVIEW.md` for review criteria, including code behavior not described by the product specification.
 - Run `npm run check` before completing changes; use `npm run check:quick` for all checks except end-to-end tests, and `npm run format` to apply formatting.
+- Lefthook's pre-commit hook formats staged files and runs lint, type checks, and Gitleaks without running tests. Copilot hooks run `npm run check:quick` at turn end and block edits to `.env`.
 
 Update `docs/status.md` when work changes implementation progress or verification results.

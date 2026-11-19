@@ -3,9 +3,11 @@
 ## Status: Core MVP implemented — automated checks and Windows smoke tests pass; cross-platform/performance checks pending
 
 ## Goal
+
 Build a local portfolio web portal for a small artist to showcase artworks, manage gallery content, and review engagement metrics from public visitors.
 
 ## Current scope
+
 - Web portal, not a standalone app
 - Artist/admin dashboard and public gallery experience
 - Artwork management: add, edit, delete, publish, unpublish
@@ -17,11 +19,13 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - No multiple admin accounts, AI, mobile layout, or external integrations in MVP
 
 ## Tech stack
+
 - Frontend: React + TypeScript + Vite
 - Backend: Java + Spring Boot
 - Database: H2 (embedded RDBMS) for MVP
 
 ## Current artifact set
+
 - [MVP intent](changes/mvp/intent.md)
 - [MVP implementation plan](changes/mvp/plan.md)
 - [TECH_STACK.md](TECH_STACK.md)
@@ -31,6 +35,7 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - [mockups/mockup-03-artwork-detail.html](../mockups/mockup-03-artwork-detail.html) — pending review
 
 ## Implemented
+
 - React + TypeScript + Vite frontend and Java 21 + Spring Boot + H2 backend
 - Public landing page, artwork gallery and detail view; local artwork images
 - One-time artist/admin setup and viewer registration/sign-in with role-based access
@@ -42,6 +47,7 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - Java-home discovery for the wrapper, using `JAVA_HOME` or a Java executable on `PATH`
 
 ## Decisions and known limitations
+
 - Viewer registration is open; password recovery is out of MVP scope.
 - Authentication uses an HTTP-only browser-session cookie. Repeating a reaction removes it; choosing the opposite replaces it.
 - The reset command is destructive: it also deletes all accounts and engagement records.
@@ -51,6 +57,7 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - Automated suites and Windows runtime verification are complete. macOS/Linux behavior, disconnected-network operation, and quantitative performance are not yet independently validated.
 
 ## Verification
+
 - `npm run check:quick` passes all format, lint, type, secret-scanning, unit-test, and coverage checks.
 - `npm run check` passes the same checks plus end-to-end tests.
 - Frontend: 32 unit/component tests pass; line coverage is 92.75% (474/511), above the 80% threshold.
@@ -60,8 +67,17 @@ Build a local portfolio web portal for a small artist to showcase artworks, mana
 - Windows runtime checks pass: `npm start` serves the SPA/API and local images, a published artwork survives a real application restart with the file-backed H2 database, and `npm run reset` restores the sample baseline.
 - Linux/macOS startup and reset, true disconnected-network operation, and quantified performance remain unverified.
 
+## Contributor hooks
+
+- Lefthook 2.2.2 is configured as a Git pre-commit hook. A staged Markdown fixture was reformatted and passed frontend lint/type checks, backend Checkstyle/compile, and staged Gitleaks; the hook did not run tests.
+- Copilot `agentStop` was exercised with simulated passing and failing check commands. Failures were returned in the block reason, and a subsequent `stop_hook_active` event was allowed.
+- Copilot `preToolUse` was exercised with `.env` edit, patch, and shell-command payloads; `.env.example`, unrelated files, and read-only access were allowed.
+- Copilot hook handlers were tested directly with representative event payloads. Runtime hook dispatch was not reloaded in this existing session; start a new trusted Copilot-harness session to verify discovery and live event delivery.
+
 ## Definition of done
+
 The MVP is done when:
+
 - the artist can manage artworks end-to-end
 - visitors can browse and engage with the gallery
 - the dashboard reflects key counts accurately

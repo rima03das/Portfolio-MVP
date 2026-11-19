@@ -1,40 +1,36 @@
-# Quality-check workflow intent
+# Hook workflow intent
 
 ## Problem
 
-The project has frontend and Java backend test suites, but no single enforced
-workflow for formatting, linting, complexity limits, type/compile validation,
-secret scanning, or minimum unit-test coverage.
+The repository has comprehensive project checks but does not automatically run
+a fast staged-file validation before commits or quick checks when a Copilot
+coding-agent turn ends. Agent tools also need an explicit guard against
+modifying `.env`.
 
 ## Goal
 
-Provide reliable npm commands for formatting and comprehensive/quick checks.
-The checks must preserve the existing React/TypeScript and Java/Spring Boot
-stack, use recommended frontend TypeScript, React Hooks, and accessibility
-linting, enforce cyclomatic complexity no greater than 15, detect secrets
-across the repository while permitting a git-ignored `.env`, and require at
-least 80% unit-test line coverage.
+Add three safeguards:
 
-## Users
-
-Contributors need one documented command to validate the full project and a
-faster variant that omits browser end-to-end tests.
+- A Lefthook pre-commit hook that formats staged files and runs lint, type
+  checks, and Gitleaks without running tests.
+- A Copilot `agentStop` hook that runs `npm run check:quick`, returns failures
+  to the agent for correction, and allows the next stop attempt so it cannot
+  block indefinitely.
+- A Copilot `preToolUse` hook that denies tool calls targeting `.env`.
 
 ## Constraints
 
-- Keep the existing Java backend; use Java-native formatting, linting,
-  complexity, and compilation checks rather than Python tools.
-- Keep TypeScript 7; use Oxlint's TypeScript checks because typescript-eslint
-  does not support the installed compiler version.
-- Do not weaken rules to accommodate existing findings.
-- Keep `docs/STANDARDS.MD` unchanged.
-- Full checks include all existing test layers; quick checks omit only E2E.
+- Keep the existing app stack and quality-check rules unchanged.
+- Hook scripts must be cross-platform in the supported Windows and Unix shells.
+- Never include `.env` contents in hook output.
+- Keep pre-commit checks test-free and scoped to staged formatting.
 
 ## Success criteria
 
-- `npm run format` applies frontend and Java formatting.
-- `npm run check:quick` passes formatting checks, lint, complexity, type and
-  compile checks, secret scanning, unit tests, and the 80% coverage gates.
-- `npm run check` runs the same gates plus E2E and succeeds.
-- `AGENTS.md` documents `npm run check`, and status documentation records the
-  final verification results.
+- Lefthook is installed by the project package lifecycle and runs its pre-commit
+  checks.
+- Copilot hook config uses supported `agentStop` and `preToolUse` events.
+- A failed end-of-turn check blocks once with useful failure output; a
+  subsequent stop with `stop_hook_active` is allowed.
+- `.env` edit requests are denied, while unrelated files are unaffected.
+- Each hook is exercised with a test that demonstrates its behavior.
